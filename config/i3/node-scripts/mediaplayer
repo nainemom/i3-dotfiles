@@ -14,6 +14,10 @@ const fileKey = 'xesam:url: ';
 const playingFile = result.find((line) => line.startsWith(fileKey));
 const playbackStatus = run('PlaybackStatus');
 
+if (!playingFile) {
+  return;
+}
+
 if (utils.arg(0) === 'get') {
   const artistKey = 'xesam:artist: ';
   const titleKey = 'xesam:title: ';
@@ -25,7 +29,7 @@ if (utils.arg(0) === 'get') {
   } else {
     utils.respondWith(`${icon}  ${playingFile.substr(playingFile.lastIndexOf('/') + 1)}`);
   }
-} if (utils.arg(0) === 'ask' && playingFile) {
+} if (utils.arg(0) === 'ask') {
   const options = [];
   const actions = [];
 
