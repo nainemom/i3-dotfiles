@@ -43,7 +43,7 @@ Just make sure you already installed dependencies on your machine, then just pla
 - `$mod+o` Sound Menu
 - `$mod+k` Keyboard Layout Menu
 - `$mod+space` Switch Keyboard Layout
-- `$mod+t exec` Open Terminal
+- `$mod+t` Open Terminal
 - `$mod+h` Open System Monitor
 - `$mod+p` Screenshot Menu
 - `$mod+m` Media Player Control Menu
