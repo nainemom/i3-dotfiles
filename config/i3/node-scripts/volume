@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+// require amixer
+
+const utils = require('./lib/utils');
+
+const setVolume = (param) => {
+  utils.run(`amixer set Master ${param}`);
+  utils.refreshI3Block(10);
+}
+
+const isMute = !!utils.run('amixer get Master | grep \'\\[off\\]\'').trim();
+const currentVolume = parseInt(utils.run('amixer get Master | awk \'/Mono.+/ {print $6=="[off]"?$6:$4}\' | tr -d \'[]\'')) || 0;
+
+const filterInput = (input) => {
+  return input.endsWith('%') ? input : `${input}%`
+}
+
+if (utils.arg(0) === 'get') {
+  utils.respondWith(isMute ? ' Mute' : ` ${currentVolume}%`);
+} else if (utils.arg(0) === 'ask') {
+  const currentVolumeRound = `${currentVolume - (currentVolume % 5)}%`;
+  const volumes = new Array(21).fill(null).map((z, i) => `${i * 5}%`);
+
+  const unmuteText = ' Unmute';
+  const muteText = ' Mute';
+  volumes.unshift(isMute ? unmuteText : muteText);
+  
+  const action = utils.ask(' Set Volume', volumes, false, isMute ? unmuteText : currentVolumeRound);
+  
+  if (action) {
+    if (action.indexOf('ute') !== -1) {
+      setVolume(isMute ? 'on' : 'off');
+    }
+    setVolume(filterInput(action));
+  }
+}
+
+

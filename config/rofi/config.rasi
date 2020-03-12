@@ -1,0 +1,47 @@
+configuration {
+	display-drun:    "Search:";
+	display-run:     "";
+	display-window:  "";
+    modi: "window,run,ssh,drun,windowcd";
+	show-icons:      false;
+}
+
+* {
+    background-color:      Black;
+    text-color:           White;
+    font:            "Monospace 14";
+}
+
+#window {
+    anchor:     north;
+    location:   north;
+    width:      100%;
+}
+
+
+
+#listview {
+    lines: 200;
+    fixed-height: false;
+}
+
+#prompt {
+    expand:     false;
+    padding: 1px 3px;
+    font:            "Monospace 11";
+}
+
+#entry {
+    expand:     true;
+    padding: 1px 3px;
+    font:            "Monospace 11";
+}
+
+#element {
+    padding: 1px 3px;
+    spacing: 0;
+    font:            "Monospace 11";
+}
+#element selected {
+    background-color: #285577;
+}

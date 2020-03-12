@@ -1,0 +1,7 @@
+{
+  "keyboardLayouts": ["us", "ir"],
+  "workspaceCols": 4,
+  "workspaceRows": 2,
+  "workspaceCycle": true,
+  "mediaPlayer": "vlc"
+}

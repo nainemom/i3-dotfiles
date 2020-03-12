@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils');
+
+
+if (utils.arg(0) === 'ask') {
+  const key = new Date().toISOString().split(':').join('').split('.').join('');
+  const fileName = `~/Pictures/screenshot_${key}.png`;
+  const options = [
+    'Full Screen',
+    'Focused Window',
+  ];
+
+  const shot = (action) => {
+    utils.run(`scrot 'scrot_${Date.now()}.png' ${['', '-u'][action]} -e 'mv $f ${fileName}'`);
+    utils.notif('Screenshot', `${fileName} Saved!`);
+  }
+  const action = utils.ask(' Taking Screenshot', options, true);
+  if (action !== -1) {
+    shot(action);
+  }
+}
+

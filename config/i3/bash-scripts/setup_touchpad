@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DEVICE="$(xinput list --name-only | grep Touchpad)"
+
+# to getting these ids, run "xinput list-props $DEVICE"
+TAB_TO_CLICK=320
+NATURAL_SCROLLING=302
+
+xinput set-prop "$DEVICE" "$TAB_TO_CLICK" 1
+xinput set-prop "$DEVICE" "$NATURAL_SCROLLING" 1

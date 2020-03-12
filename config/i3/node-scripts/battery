@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils');
+
+const percentage = utils.run('upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep \'percentage\' | awk \'{print $2}\'').trim();
+const state = utils.run('upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep \'state\' | awk \'{print $2}\'').trim();
+utils.respondWith(` ${percentage} (${state})`);

@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+
+// require wicd, wicd-cli
+
+const utils = require('./lib/utils');
+
+const isEnabled = !utils.run('wicd-cli --status | grep \'Not connected\'');
+
+const listOfConnections = utils.run('wicd-cli --wireless --list-networks | tail -n +2').split('\n').filter((item) => !!item).map((item) => {
+  const splited = item.split('\t');
+  return {
+    id: splited[0],
+    ssid: splited.slice(3).join(' '),
+  }
+});
+
+const currentConnection = () => {
+  const status = utils.run('wicd-cli --status | grep \'Connected to\'').trim();
+  const splited = status.replace('Connected to ', '').split(' ');
+  const ip = splited.pop().replace(')', '');
+  splited.pop(); // "IP: "
+  const rate = splited.pop();
+  splited.pop(); // "at"
+  const ssid = splited.join(' ');
+  return {
+    ip,
+    rate,
+    ssid,
+  }
+}
+
+const scan = () => {
+  utils.run('wicd-cli --scan');
+}
+
+const openManual = () => {
+  utils.run('wicd-client --no-tray');
+}
+
+const disconnect = () => {
+  utils.run('wicd-cli --wireless --disconnect');
+
+}
+
+const connectTo = (item) => {
+  const options = [
+    ' Auto Connect',
+    ' Modify First'
+  ];
+  const autoConnect = () => {
+    utils.run(`wicd-cli --wireless --network ${item.id} -c`);
+  }
+  const actions = [
+    autoConnect.bind(),
+    openManual.bind(),
+  ]
+  const action = utils.ask(`Connect to ${item.ssid}`, options, true);
+  action !== -1 && actions[action]();
+}
+
+if (utils.arg(0) === 'get') {
+  if (isEnabled) {
+    const connection = currentConnection();
+    utils.respondWith(` ${connection.ssid} (${connection.rate}, ${connection.ip})`);
+  } else {
+    utils.respondWith(' Offline');
+  }
+} else if (utils.arg(0) === 'ask') {
+  const options = [];
+  const commands = [];
+  const addToOptions = (title, action) => {
+    options.push(title);
+    commands.push(action);
+  }
+  if (isEnabled) {
+    addToOptions(' Disconnect', disconnect.bind());
+    addToOptions(' Scan', scan.bind());
+  }
+  addToOptions(' Edit Connections', openManual.bind());
+  listOfConnections.forEach((item) => {
+    addToOptions(` ${item.ssid}`, connectTo.bind(undefined, item));
+  });
+
+  const action = utils.ask('Network Options', options, true);
+  action > -1 && commands[action]();
+}

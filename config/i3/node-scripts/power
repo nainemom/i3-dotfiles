@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils');
+
+const commands = [
+  'scrot ~/lock.png -e \'convert $f -noise 2 $f && i3lock -f -i $f && rm -f $f\'',
+  'systemctl poweroff',
+  'systemctl reboot',
+  'i3-msg exit',
+];
+
+if (utils.arg(0) === 'ask') {
+  const options = [
+    ' Lock',
+    ' Shutdown',
+    ' Restart',
+    ' Logout',
+  ];
+  const action = utils.ask('Power Menu', options, true);
+  action !== -1 && utils.run(commands[action], true);
+}
+

@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+// require jq
+
+const utils = require('./lib/utils');
+const { workspaceRows, workspaceCols, workspaceCycle } = require('../config.json');
+
+const currentWid = +(utils.run('i3-msg -t get_workspaces | jq \'.[] | select(.focused==true).name\'  | cut -d"\\"" -f2').trim());
+const currentRow = Math.ceil(currentWid / workspaceCols)
+const currentCol = ((currentWid - 1) % workspaceCols) + 1;
+
+if (utils.arg(0) === 'get') {
+  let output = '';
+  for(let row = 1; row <= workspaceRows; row++) {
+    output += '[';
+    for(let col = 1; col <= workspaceCols; col++) {
+      output += (currentRow === row && currentCol === col) ? '#' : '-';
+    }
+    output += ']';
+  }
+  utils.respondWith(output);
+} else if (utils.arg(0) === 'run') {
+  const go = (row, col, move = false) => {
+    const wid = ((row - 1) * workspaceCols) + col;
+    move && utils.run(`i3-msg  move container to workspace ${wid}`);
+    utils.run(`i3-msg workspace ${wid}`, true);
+    utils.refreshI3Block(11);
+  }
+
+  const moveCurrentWindow = utils.arg(1) !== 'go';
+  const direction = utils.arg(2);
+  let newRow = currentRow;
+  let newCol = currentCol;
+  switch(direction) {
+    case 'up':
+      newRow = newRow - 1 === 0 ? (workspaceCycle ? workspaceRows : 0) : newRow - 1;
+      break;
+    case 'down':
+      newRow = newRow + 1 > workspaceRows ? (workspaceCycle ? 1 : workspaceRows) : newRow + 1;
+      break;
+    case 'left':
+      newCol = newCol - 1 === 0 ? (workspaceCycle ? workspaceCols : 0) : newCol - 1;
+      break;
+    case 'right':
+      newCol = newCol + 1 > workspaceCols ? (workspaceCycle ? 1 : workspaceCols) : newCol + 1;
+      break;
+  }
+  go(newRow, newCol, moveCurrentWindow);
+}
+
+

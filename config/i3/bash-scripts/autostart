@@ -1,0 +1,3 @@
+#!/bin/bash
+
+find ~/.config/autostart | grep .desktop | while read line; do cat $line | grep Exec | cut -d'=' -f2 | xargs -I X bash -c "X"; done

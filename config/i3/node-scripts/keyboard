@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils');
+
+const currentLayout = utils.run('setxkbmap -query | grep layout | awk \'{print $2}\' | cut -d , -f2').toString().trim();
+
+const setLayout = (param) => {
+  utils.run(`setxkbmap -layout ${param}`, true);
+  utils.refreshI3Block(12)
+}
+
+
+const layouts = require('../config.json').keyboardLayouts;
+if (utils.arg(0) === 'get') {
+  utils.respondWith(` ${currentLayout}`);
+} else if (utils.arg(0) === 'toggle') {
+  let newLayoutIndex = layouts.indexOf(currentLayout) + 1;
+  if (newLayoutIndex >= layouts.length) {
+    newLayoutIndex = 0;
+  }
+  setLayout(layouts[newLayoutIndex]);
+} else if (utils.arg(0) === 'ask') {
+  const newLayout = utils.ask(` Set Keyboard Layout`, layouts, false, currentLayout);
+  newLayout && setLayout(newLayout);
+}

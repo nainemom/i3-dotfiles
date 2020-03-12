@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+// reguire qdbus
+
+const utils = require('./lib/utils.js');
+const playerName = 'vlc';
+
+const run = (action) => {
+  return utils.run(`qdbus org.mpris.MediaPlayer2.${playerName} /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.${action}`).trim();
+}
+
+const result = run('Metadata').split('\n');
+const fileKey = 'xesam:url: ';
+const playingFile = result.find((line) => line.startsWith(fileKey));
+const playbackStatus = run('PlaybackStatus');
+
+if (utils.arg(0) === 'get') {
+  const artistKey = 'xesam:artist: ';
+  const titleKey = 'xesam:title: ';
+  const artist = result.find((line) => line.startsWith(artistKey));
+  const title = result.find((line) => line.startsWith(titleKey));
+  const icon = playbackStatus === 'Playing' ? '' : (playbackStatus === 'Paused' ? '' : '');
+  if (artist && title) {
+    utils.respondWith(`${icon}  ${artist.replace(artistKey, '')} - ${title.replace(titleKey, '')}`);
+  } else {
+    utils.respondWith(`${icon}  ${playingFile.substr(playingFile.lastIndexOf('/') + 1)}`);
+  }
+} if (utils.arg(0) === 'ask' && playingFile) {
+  const options = [];
+  const actions = [];
+
+  options.push(' Previous');
+  actions.push('Previous');
+  options.push(playbackStatus  === 'Playing' ? ' Pause' : ' Play');
+  actions.push('PlayPause');
+  options.push(' Stop');
+  actions.push('Stop');
+  options.push(' Next');
+  actions.push('Next');
+
+  const action = utils.ask('Music Control', options, true);
+  action !== -1 && run(actions[action]);
+}

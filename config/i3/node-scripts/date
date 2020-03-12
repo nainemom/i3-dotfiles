@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils.js');
+const JalaliDate = require('./lib/jalali-date');
+
+const jalali = new JalaliDate().fromTimestamp(Date.now()).slice(0,3);
+const geogorian = new Date();
+const weekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][geogorian.getDay()];
+
+utils.respondWith(
+  ` ${weekDay} ${geogorian.getFullYear()}/${geogorian.getMonth()+1}/${geogorian.getDate()} ${jalali[0]}/${jalali[1]+1}/${jalali[2]}`
+);

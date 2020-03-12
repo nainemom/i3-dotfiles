@@ -1,0 +1,105 @@
+set $mod Mod4
+
+floating_modifier $mod
+
+# kill focused window
+bindsym $mod+q kill
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+Ctrl+space focus mode_toggle
+bindsym $mod+a focus parent
+#bindsym $mod+d focus child
+
+# switch to workspace
+workspace_layout tabbed
+bindsym $mod+Ctrl+Left exec ~/.config/i3/node-scripts/workspace run go left
+bindsym $mod+Ctrl+Right exec ~/.config/i3/node-scripts/workspace run go right
+bindsym $mod+Ctrl+Up exec ~/.config/i3/node-scripts/workspace run go up
+bindsym $mod+Ctrl+Down exec ~/.config/i3/node-scripts/workspace run go down
+bindsym $mod+Ctrl+Shift+Left exec ~/.config/i3/node-scripts/workspace run move left
+bindsym $mod+Ctrl+Shift+Right exec ~/.config/i3/node-scripts/workspace run move right
+bindsym $mod+Ctrl+Shift+Up exec ~/.config/i3/node-scripts/workspace run move up
+bindsym $mod+Ctrl+Shift+Down exec ~/.config/i3/node-scripts/workspace run move down
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+
+mode "resize" {
+  bindsym Left resize shrink width 10 px or 10 ppt
+  bindsym Down resize grow height 10 px or 10 ppt
+  bindsym Up resize shrink height 10 px or 10 ppt
+  bindsym Right resize grow width 10 px or 10 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+
+# colors
+# class                 border  bground text    indicator child_border
+client.focused          #285577 #285577 #FFFFFF #285577   #285577
+client.focused_inactive #373737 #373737 #888888 #373737   #373737
+client.unfocused        #285577 #000000 #FFFFFF #000000   #000000
+client.urgent           #900000 #900000 #FFFFFF #900000   #900000
+client.placeholder      #000000 #000000 #FFFFFF #000000   #000000
+client.background       #FFFFFF
+
+
+font pango:Monospace 14px
+
+bar {
+	position top
+	status_command i3blocks -c .config/i3/i3blocks.conf
+	font pango:Monospace 14px
+ 	separator_symbol "|"
+  workspace_buttons no
+  tray_output primary
+
+  colors {
+    background #000000
+    statusline #FFFFFF
+    separator  #888888
+  }
+} 
+
+
+# app launcher menu
+bindsym $mod+d exec ~/.config/i3/bash-scripts/appfinder
+bindsym $mod+l exec ~/.config/i3/node-scripts/power ask
+bindsym $mod+i exec ~/.config/i3/node-scripts/wifi ask
+bindsym $mod+o exec ~/.config/i3/node-scripts/volume ask
+bindsym $mod+k exec ~/.config/i3/node-scripts/keyboard ask
+bindsym $mod+space exec ~/.config/i3/node-scripts/keyboard toggle
+bindsym $mod+t exec /usr/bin/x-terminal-emulator
+bindsym $mod+h exec /usr/bin/x-terminal-emulator -e htop
+bindsym $mod+p exec ~/.config/i3/node-scripts/screenshot ask
+bindsym $mod+m exec ~/.config/i3/node-scripts/mediaplayer ask
+
+focus_follows_mouse false
+
+exec_always --no-startup-id xsetroot -solid "#000000"
+
+exec ~/.config/i3/bash-scripts/autostart
+exec ~/.config/i3/bash-scripts/setup_touchpad

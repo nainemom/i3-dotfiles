@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+const utils = require('./lib/utils');
+
+utils.respondWith(` ${utils.run('date \'+%I:%M:%S\'')}`);
