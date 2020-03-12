@@ -7,16 +7,16 @@ This is my custom dotfiles based on `i3`.
 
 
 ## Features:
-[x] Grid Workspace
-[x] Jalali Date
-[x] Custom Lock page
-[x] Take Care of `autostart` Apps
-[x] GUI Menu for Network
-[x] GUI Menu for Sound Menu
-[x] GUI Menu for Power Options
-[x] GUI Menu for Playback Control
-[x] GUI Menu for Keyboard Layouts
-[x] GUI Menu for Taking Screenshot
+- Grid Workspace
+- Jalali Date
+- Custom Lock page
+- Take Care of `autostart` Apps
+- GUI Menu for Network
+- GUI Menu for Sound Menu
+- GUI Menu for Power Options
+- GUI Menu for Playback Control
+- GUI Menu for Keyboard Layouts
+- GUI Menu for Taking Screenshot
 
 ## Dependencies:
 - `i3` of course you need that
