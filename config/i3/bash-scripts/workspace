@@ -1,0 +1,112 @@
+#!/bin/bash
+
+config=$(cat ~/.config/i3/config.json);
+
+workspaceRows=$[$(echo $config | jq ".workspaceRows")];
+workspaceCols=$[$(echo $config | jq ".workspaceCols")];
+
+workspaceCycle=0
+if [ "$(echo $config | jq .workspaceCycle)" == "true" ]; then
+  workspaceCycle=1;
+fi
+
+currentWid=$[$(i3-msg -t get_workspaces | jq '.[] | select(.focused==true).name'  | cut -d"\"" -f2)];
+
+currentRow=$[(($currentWid-1)/$workspaceCols)+1];
+
+currentCol=$[(($currentWid-1)%$workspaceCols)+1];
+
+function go() {
+  # $1 row
+  # $2 col
+  # $3 isMove
+  local wid=$[(($1-1)*$workspaceCols)+$2];
+
+  if [ $3 -gt 0 ]; then
+    i3-msg move container to workspace $wid;
+  fi;
+  i3-msg workspace $wid;
+  pkill -SIGRTMIN+11 i3blocks;
+}
+
+if [ "$1" == "get" ]; then
+  output="";
+
+  for (( row=1; row<=$workspaceRows; row++ )); do
+
+    output="$output[";
+
+    for (( col=1; col<=$workspaceCols; col++ )); do
+    
+      if [ $currentRow -eq $row ] && [ $currentCol -eq $col ]; then
+        output="$output#";
+      else
+        output="$output-";
+      fi
+
+    done
+    output="$output]";
+
+    if [ $row -lt $workspaceRows ]; then
+      output="$output/";
+    fi
+  done
+
+  echo $output
+elif [ "$1" == "run" ]; then
+  # user wants to change ws
+  isMove=0;
+  if [ "$2" == "move" ]; then
+    isMove=1;
+  fi
+  newRow=$currentRow;
+  newCol=$currentCol;
+  case "$3" in
+
+    "up")
+      newRow=$[$newRow-1];
+      ;;
+
+    "down")
+      newRow=$[$newRow+1];
+      ;;
+
+    "left")
+      newCol=$[$newCol-1];
+      ;;
+
+    "right")
+      newCol=$[$newCol+1];
+      ;;
+  esac
+
+  if [ $newRow -lt 1 ]; then
+    if [ $workspaceCycle -eq 1 ]; then
+      newRow=$workspaceRows;
+    else
+      newRow=1;
+    fi
+  elif [ $newRow -gt $workspaceRows ]; then
+    if [ $workspaceCycle -eq 1 ]; then
+      newRow=1;
+    else
+      newRow=$workspaceRows;
+    fi
+  fi
+
+  if [ $newCol -lt 1 ]; then
+    if [ $workspaceCycle -eq 1 ]; then
+      newCol=$workspaceCols;
+    else
+      newCol=1;
+    fi
+  elif [ $newCol -gt $workspaceCols ]; then
+    if [ $workspaceCycle -eq 1 ]; then
+      newCol=1;
+    else
+      newCol=$workspaceCols;
+    fi
+  fi
+
+  go $newRow $newCol $isMove;
+fi;

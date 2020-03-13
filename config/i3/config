@@ -28,14 +28,14 @@ bindsym $mod+a focus parent
 
 # switch to workspace
 workspace_layout tabbed
-bindsym $mod+Ctrl+Left exec ~/.config/i3/node-scripts/workspace run go left
-bindsym $mod+Ctrl+Right exec ~/.config/i3/node-scripts/workspace run go right
-bindsym $mod+Ctrl+Up exec ~/.config/i3/node-scripts/workspace run go up
-bindsym $mod+Ctrl+Down exec ~/.config/i3/node-scripts/workspace run go down
-bindsym $mod+Ctrl+Shift+Left exec ~/.config/i3/node-scripts/workspace run move left
-bindsym $mod+Ctrl+Shift+Right exec ~/.config/i3/node-scripts/workspace run move right
-bindsym $mod+Ctrl+Shift+Up exec ~/.config/i3/node-scripts/workspace run move up
-bindsym $mod+Ctrl+Shift+Down exec ~/.config/i3/node-scripts/workspace run move down
+bindsym $mod+Ctrl+Left exec ~/.config/i3/bash-scripts/workspace run go left
+bindsym $mod+Ctrl+Right exec ~/.config/i3/bash-scripts/workspace run go right
+bindsym $mod+Ctrl+Up exec ~/.config/i3/bash-scripts/workspace run go up
+bindsym $mod+Ctrl+Down exec ~/.config/i3/bash-scripts/workspace run go down
+bindsym $mod+Ctrl+Shift+Left exec ~/.config/i3/bash-scripts/workspace run move left
+bindsym $mod+Ctrl+Shift+Right exec ~/.config/i3/bash-scripts/workspace run move right
+bindsym $mod+Ctrl+Shift+Up exec ~/.config/i3/bash-scripts/workspace run move up
+bindsym $mod+Ctrl+Shift+Down exec ~/.config/i3/bash-scripts/workspace run move down
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
